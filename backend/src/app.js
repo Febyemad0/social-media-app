@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import mongooese from "mongoose";
 import dotenv from "dotenv";
+import Router from "./routes/indexRoute";
 
 dotenv.config();
 
