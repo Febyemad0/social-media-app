@@ -2,7 +2,9 @@ import express from "express";
 import cors from "cors";
 import mongooese from "mongoose";
 import dotenv from "dotenv";
-import Router from "./routes/indexRoute";
+import userRouter from "./routes/userRoutes.js"
+import postRouter from "./routes/postRoutes.js"
+import commentRouter from "./routes/commentRoutes.js"
 
 dotenv.config();
 
@@ -21,3 +23,8 @@ mongooese
   .catch((err) => {
     console.log(err.message);
   });
+
+  app.use('/user', userRouter);
+  app.use('/post', postRouter)
+  app.use('/comment', commentRouter)
+

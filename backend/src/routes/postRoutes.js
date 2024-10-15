@@ -1,14 +1,14 @@
 import express from "express";
-import  postModel from "../services/postsServices.js"
+import {createPost ,getPostsByUserId ,getPostById ,updatePost ,deletePost , addLike ,getLikes} from "../controllers/postController.js"
 
 
 const route = express.Router();
-route.get("/:userId",postModel.getPostsByUserId);
-route.get("/:postId",postModel.getPostById);
-route.post("/",postModel.create);
-route.update("/",postModel.update);
-route.delete("/",postModel.delete);
-route.get("/like",postModel.getLikes);
-route.post("/like",postModel.addLike);
+route.get("/",getPostsByUserId);
+route.get("/",getPostById);
+route.post("/", createPost);
+route.put("/:Id",updatePost);
+route.delete("/:Id",deletePost);
+route.get("/like",getLikes);
+route.post("/like",addLike);
 
 export default route;

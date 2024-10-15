@@ -1,12 +1,13 @@
 import express from "express";
-import  CommentModel from "../services/commentService.js"
+import  {createComment , getCommentsByPostId ,updateComment ,deleteComment , addLike ,getLikes} from "../controllers/commentController.js"
 
 
 const route = express.Router();
-route.get("/",CommentModel.getCommentsByPostId);
-route.post("/",CommentModel.create);
-route.update("/",CommentModel.update);
-route.delete("/",CommentModel.delete);
-route.get("/like",CommentModel.getLikes);
-route.post("/like",CommentModel.addLike);
+route.get("/:postId",getCommentsByPostId);
+route.post("/",createComment);
+route.put("/:Id",updateComment);
+route.delete("/:Id",deleteComment);
+route.get("/like", getLikes);
+route.post("/like", addLike);
+
 export default route;
