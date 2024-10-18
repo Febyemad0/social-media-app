@@ -1,0 +1,56 @@
+
+POST http://localhost:3000/user/register
+Content-Type: application/json
+
+{
+    "email": "sandreen@gmail.com",
+    "username": "sandreen",
+    "password": "Sandreen1@"
+}
+
+###
+
+
+POST http://localhost:3000/user/login
+Content-Type: application/json
+
+{
+    "email": "sandreen@gmail.com",
+    "password": "Sandreen1@"
+}
+
+###
+
+
+POST http://localhost:3000/chats/
+Content-Type: application/json
+
+{
+    "recieverEmail": "reem@gmail.com"
+}
+
+
+###
+
+
+POST http://localhost:3000/auth/logout
+
+###
+
+DELETE  http://localhost:3000/chats/1
+
+###
+GET http://localhost:3000/message/?chatId=3
+
+###
+
+
+POST http://localhost:3000/message/
+Content-Type: application/json
+
+{
+    "chatId": "2",
+    "content": "tarek"
+}
+###
+GET http://localhost:3000/chats                                                                 
