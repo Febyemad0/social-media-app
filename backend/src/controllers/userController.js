@@ -10,12 +10,8 @@ export const register = async (req, res) => {
       res.status(200).json({ message: "email is already exist" });
     } else {
       const hashed_pass = await hash(password, 10);
-      const user = await userModel.create(
-        username,
-        email,
-        hashed_pass,
-        profileImage
-      );
+      const user = await userModel.create(username, email, hashed_pass);
+      console.log(user);
       const token = jwt.sign({ userId: user.id }, process.env.SecretKey, {
         expiresIn: "1h",
       });
@@ -25,12 +21,11 @@ export const register = async (req, res) => {
         sameSite: "none",
         partitioned: true,
       };
-      console.log(token);
       res.cookie("token", token, cookieOptions);
       res.status(201).json({ message: "User registered successfully" });
     }
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.message });
   }
 };
 

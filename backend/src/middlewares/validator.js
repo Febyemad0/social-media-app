@@ -3,7 +3,7 @@ const registerValidation = (req, res, next) => {
     const { email, password } = req.body;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      res.staus(400).json({ message: "Invalid email format" });
+      return res.staus(400).json({ message: "Invalid email format" });
     }
     // - Minimum 8 characters
     // - At least one lowercase letter
@@ -13,7 +13,7 @@ const registerValidation = (req, res, next) => {
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(password)) {
-      res.staus(400).json({ message: "Invalid password format" });
+      return res.status(400).json({ message: "Invalid password format" });
     }
     next();
   } catch (err) {

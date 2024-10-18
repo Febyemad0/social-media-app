@@ -5,20 +5,13 @@ import dotenv from "dotenv";
 import userRouter from "./routes/userRoutes.js";
 import postRouter from "./routes/postRoutes.js";
 import commentRouter from "./routes/commentRoutes.js";
-import multer from "multer";
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./images");
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-
-export const upload = multer({ storage: storage });
 const url = process.env.DATABASE_URL;
 const app = express();
 

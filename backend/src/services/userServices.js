@@ -6,6 +6,9 @@ import User from "../models/user.js";
 class UserModel {
   // Creates a new user and saves it to the database
   static async create(username, email, password, profileImage = "") {
+    if (await UserModel.getByUserName(username)) {
+      throw new Error("username already exist");
+    }
     let user = new User({
       username: username,
       email: email,
@@ -15,6 +18,10 @@ class UserModel {
     return user.save();
   }
 
+  // get a user document by email
+  static async getByUserName(username) {
+    return User.findOne({ username: username });
+  }
   // get a user document by email
   static async getByEmail(email) {
     return User.findOne({ email: email });
