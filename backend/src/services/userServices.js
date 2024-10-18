@@ -24,7 +24,10 @@ class UserModel {
   static async getById(id) {
     return User.findById(id, "username email profileImage");
   }
-
+  // update profile image
+  static async updateProfileImg(id, path) {
+    return User.findByIdAndUpdate(id, { profileImage: path }, { new: true });
+  }
   /* Updates a user document with new data where updated data is an object like:
     {
     username: "NAME",

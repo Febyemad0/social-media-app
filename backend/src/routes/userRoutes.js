@@ -1,13 +1,25 @@
-
 import express from "express";
-import {createUser, getUserByEmail , getUserById , updateUser , deleteUser} from "../controllers/userController.js"
+import {
+  register,
+  login,
+  getUserByEmail,
+  getUserById,
+  updateUser,
+  deleteUser,
+  updateUserProfie,
+} from "../controllers/userController.js";
+import registerValidation from "../middlewares/validator.js";
+import verifyToken from "../middlewares/authMiddleware.js";
+import { upload } from "../app.js";
 
-const route = express.Router()
+const route = express.Router();
 
-route.get("/",getUserByEmail);
-route.get("/:Id",getUserById);
-route.post("/",createUser);
-route.put("/:Id",updateUser);
-route.delete("/:Id",deleteUser);
+route.get("/", verifyToken, getUserByEmail);
+route.get("/:Id", verifyToken, getUserById);
+route.post("/", registerValidation, register);
+route.post("/", login);
+route.put("/", verifyToken, upload.single("image"), updateUserProfie);
+route.put("/:Id", verifyToken, updateUser);
+route.delete("/:Id", verifyToken, deleteUser);
 
 export default route;
