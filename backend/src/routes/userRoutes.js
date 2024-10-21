@@ -7,10 +7,12 @@ import {
   getUserById,
   updateUser,
   deleteUser,
-  updateUserProfie,
+  updateUserProfile,
 } from "../controllers/userController.js";
 import registerValidation from "../middlewares/validator.js";
 import verifyToken from "../middlewares/authMiddleware.js";
+
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./images");
@@ -19,8 +21,9 @@ const storage = multer.diskStorage({
     cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
-
 const upload = multer({ storage: storage });
+
+
 const route = express.Router();
 /**
  * Controller: getUserByEmail
@@ -75,7 +78,7 @@ route.post("/login", login);
  *     - 404 status if user not found with { message: "User not found" }
  *     - 500 status with { error: err.message }
  */
-route.put("/", verifyToken, upload.single("image"), updateUserProfie);
+route.put("/", verifyToken, upload.single("image"), updateUserProfile);
 /**
  * Controller: updateUser
  * Takes:

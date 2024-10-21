@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import mongooese from "mongoose";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import userRouter from "./routes/userRoutes.js";
 import postRouter from "./routes/postRoutes.js";
 import commentRouter from "./routes/commentRoutes.js";
@@ -17,7 +18,10 @@ const app = express();
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, "images")));
+app.use(express.static(path.join(__dirname, "media")));
 app.use(express.json());
+app.use(cookieParser())
+
 mongooese
   .connect(url)
   .then(() => {

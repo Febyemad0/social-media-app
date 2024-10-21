@@ -1,4 +1,5 @@
 import express from "express";
+import multer from "multer";
 import {
   createPost,
   getPostsByUserId,
@@ -9,6 +10,16 @@ import {
   getLikes,
 } from "../controllers/postController.js";
 import verifyToken from "../middlewares/authMiddleware.js";
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./media");
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+const upload = multer({ storage: storage });
 
 const route = express.Router();
 /**
@@ -36,7 +47,7 @@ route.get("/", verifyToken, getPostById);
  * Output:
  *   - Success: 200 status with { message: "post created successfully", data: post }
  */
-route.post("/", verifyToken, createPost);
+route.post("/", verifyToken, upload.array("media"), createPost);
 
 /**
  * Controller: updatePost
@@ -47,7 +58,7 @@ route.post("/", verifyToken, createPost);
  *   - Success: 200 status with { data: post }
  *   - Failure: 404 status with { message: "post Not found" }
  */
-route.put("/:Id", verifyToken, updatePost);
+route.put("/:Id", verifyToken,upload.array("media"), updatePost);
 /**
  * Controller: deletePost
  * Takes:
