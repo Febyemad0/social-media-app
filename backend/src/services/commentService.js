@@ -53,6 +53,18 @@ class CommentModel {
     }
   }
 
+  // remove like
+  static async removeFriend(userId, postId) {
+    let comment = await Comment.findById(commentId);
+    if (!comment) {
+      throw new Error("Comment does not exist");
+    }
+    if (comment.likes.includes(userId)) {
+      comment.likes.splice(comment.likes.indexOf(userId), 1);
+      return comment.save();
+    }
+  }
+
   // get likes of a comment
   static async getLikes(commentId) {
     let comment = await Comment.findById(commentId).lean();
