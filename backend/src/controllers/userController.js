@@ -11,7 +11,7 @@ export const register = async (req, res) => {
     } else {
       const hashed_pass = await hash(password, 10);
       const user = await userModel.create(username, email, hashed_pass);
-      console.log(user);
+      // console.log(user);
       const token = jwt.sign({ userId: user.id }, process.env.SecretKey, {
         expiresIn: "1h",
       });
@@ -22,7 +22,7 @@ export const register = async (req, res) => {
         partitioned: true,
       };
       res.cookie("token", token, cookieOptions);
-      res.status(201).json({ message: "User registered successfully" });
+      res.status(201).json({ message: "User registered successfully" , data:user});
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -62,11 +62,10 @@ export const login = async (req, res) => {
   }
 };
 
-export const updateUserProfie = async (req, res) => {
+export const updateUserProfile = async (req, res) => {
   try {
     const userId = req.userId;
-
-    const updatedUser = await userModel.updateProfileImg(userId, req.file.path);
+    const updatedUser = await userModel.updateProfileImg(userId, req.file.filename);
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -80,24 +79,33 @@ export const updateUserProfie = async (req, res) => {
 };
 
 export const getUserByEmail = async (req, res) => {
+  try {
   const email = req.body.email;
   const user = await userModel.getByEmail(email);
   if (!user) {
     return res.status(404).json({ message: "User Not Found" });
   }
   res.status(200).json({ data: user });
+ } catch (err) {
+  res.status(500).json({ error: err.message });
+ }
 };
 
 export const getUserById = async (req, res) => {
+  try {
   const Id = req.params.Id;
   const user = await userModel.getById(Id);
   if (!user) {
     return res.status(404).json({ message: "User Not Found" });
   }
   res.status(200).json({ data: user });
+ } catch (err) {
+  res.status(500).json({ error: err.message });
+ }
 };
 
 export const updateUser = async (req, res) => {
+  try {
   const Id = req.params.Id;
   const updatedData = req.body;
   const user = await userModel.update(Id, updatedData);
@@ -105,13 +113,20 @@ export const updateUser = async (req, res) => {
     return res.status(404).json({ message: "user doesn't exist" });
   }
   res.status(200).json({ data: user });
+ } catch (err) {
+  res.status(500).json({ error: err.message });
+ }
 };
 
 export const deleteUser = async (req, res) => {
+  try {
   const Id = req.params.Id;
   const user = await userModel.delete(Id);
   if (!user) {
     return res.status(404).json({ message: "user doesn't exist" });
   }
   res.status(200).json({ message: "user deleted successfully" });
+ } catch (err) {
+  res.status(500).json({ error: err.message });
+}
 };
