@@ -29,7 +29,7 @@ class UserModel {
 
   // get a user document by id
   static async getById(id) {
-    return User.findById(id, "username email profileImage");
+    return User.findById(id, "_id username email profileImage");
   }
   // update profile image
   static async updateProfileImg(id, path) {
