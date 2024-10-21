@@ -12,6 +12,7 @@ class PostModel {
       userId: userId,
       media: media,
     });
+
     return post.save();
   }
 
@@ -73,7 +74,7 @@ class PostModel {
   static async getLikes(postId) {
     let post = await Post.findById(postId).lean();
     if (!post) {
-      throw new Error("Comment does not exist");
+      throw new Error("post does not exist");
     }
     return post.likes.length;
   }
