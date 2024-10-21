@@ -58,7 +58,17 @@ class PostModel {
       return post.save();
     }
   }
-
+  // remove like
+  static async removeFriend(userId, postId) {
+    let post = await Post.findById(postId);
+    if (!post) {
+      throw new Error("post does not exist");
+    }
+    if (post.likes.includes(userId)) {
+      post.likes.splice(post.likes.indexOf(userId), 1);
+      return post.save();
+    }
+  }
   // get likes of a post
   static async getLikes(postId) {
     let post = await Post.findById(postId).lean();

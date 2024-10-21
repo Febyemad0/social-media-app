@@ -56,5 +56,33 @@ class UserModel {
     let deleted = await User.deleteOne({ _id: id });
     return deleted.deletedCount;
   }
+
+  // get a user friends by id
+  static async getFriendsById(id) {
+    const { friends } = await User.findById(id, "friends");
+    return Promise.all(friends.map(async (id) => await UserModel.getById(id)));
+  }
+  // add friend
+  static async addFriend(userId, friendId) {
+    let user = await User.findById(userId);
+    if (!user) {
+      throw new Error("user does not exist");
+    }
+    if (!user.friends.includes(friendId)) {
+      user.friends.push(friendId);
+      return user.save();
+    }
+  }
+  // remove friend
+  static async removeFriend(userId, friendId) {
+    let user = await User.findById(userId);
+    if (!user) {
+      throw new Error("user does not exist");
+    }
+    if (user.friends.includes(friendId)) {
+      user.friends.splice(user.friends.indexOf(friendId), 1);
+      return user.save();
+    }
+  }
 }
 export default UserModel;
