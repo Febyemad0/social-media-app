@@ -8,6 +8,9 @@ import {
   updateUser,
   deleteUser,
   updateUserProfile,
+  getFriendsById,
+  addFriend,
+  removeFriend
 } from "../controllers/userController.js";
 import registerValidation from "../middlewares/validator.js";
 import verifyToken from "../middlewares/authMiddleware.js";
@@ -98,5 +101,14 @@ route.put("/:Id", verifyToken, updateUser);
  *   - Failure: 404 status with { message: "user doesn't exist" }
  */
 route.delete("/:Id", verifyToken, deleteUser);
+
+
+
+route.get("/friend/:Id",verifyToken, getFriendsById);
+
+route.post("/friend",verifyToken, addFriend);
+
+route.delete( "/friend" ,verifyToken, removeFriend )
+
 
 export default route;
