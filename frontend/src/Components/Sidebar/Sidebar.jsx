@@ -23,7 +23,7 @@ export default function LeftSidebar() {
                         </Link>
                     </li>
                     <li className="flex items-center">
-                        <Link to="/" className="flex items-center px-4 py-2 text-light-bg hover:text-hover-color ease-in duration-100">
+                        <Link to="/home" className="flex items-center px-4 py-2 text-light-bg hover:text-hover-color ease-in duration-100">
                             <CgFeed className="mr-2" />
                             Feeds
                         </Link>
