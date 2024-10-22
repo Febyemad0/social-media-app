@@ -130,3 +130,41 @@ export const deleteUser = async (req, res) => {
   res.status(500).json({ error: err.message });
 }
 };
+
+
+export const getFriendsById = async (req, res) => {
+  try {
+  const Id = req.params.Id;
+  const friends = await userModel.getFriendsById(Id);
+  if (!friends) {
+    return res.json({ message: "There is no friends yet" });
+  }
+  res.status(200).json({ data: friends });
+} catch (err) {
+  res.status(500).json({ error: err.message });
+}
+};
+
+
+export const addFriend = async (req, res) => {
+  try {
+  const { friendId, userId } = req.body;
+  const friend = await userModel.addFriend(userId , friendId);
+  res.status(200).json({ message: "friend Added successfully" });
+ } catch (error) {
+  res.status(500).json({ error:`${error.message}` });
+ }
+};
+
+
+export const removeFriend = async (req, res) => {
+  try {
+    const { friendId, userId } = req.body;
+    const friend = await userModel.removeFriend(userId , friendId);
+    res.status(200).json({ message: "user removed successfully" });
+ } catch (err) {
+   res.status(500).json({ error: err.message });
+}
+};
+
+
