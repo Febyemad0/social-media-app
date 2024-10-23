@@ -1,37 +1,42 @@
-import React from 'react';
-import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import Navbar from './Components/Navbar/Navbar';
 import Sidebar from './Components/Sidebar/Sidebar';
 import Home from './Components/Home/Home';
 import Login from './Components/Auth/Login/Login';
 import Register from './Components/Auth/Register/Register';
-
-function Layout() {
-  return (
-    <div className="flex">
-      <Sidebar />
-      <div className="flex flex-col flex-1 ml-64">
-        <Navbar />
-        <div className="overflow-y-auto h-screen">
-          <Outlet />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Layout />,
-    children: [
-      { path: '/register', element: <Register /> },
-      { path: '/login', element: <Login /> },
-      { path: '/home', element: <Home /> },
-    ],
-  },
-]);
+import IntroPage from './Components/IntroPage/IntroPage';
+import { UserContext } from '../src/Context/UserContext';
+import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute';
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  const { userId } = useContext(UserContext);
+
+  return (
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route index={true} element={<IntroPage />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+
+          {/* Protected Routes */}
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <Navbar />
+                <div className="flex">
+                  <Sidebar />
+                  <div className="flex flex-col flex-1 ml-64">
+                    <Home/>
+                  </div>
+                </div>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
 }

@@ -1,66 +1,56 @@
 import axios from "axios";
 import { useFormik } from "formik";
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import { RotatingLines } from 'react-loader-spinner';
+import { UserContext } from "../../../Context/UserContext";
 
-const validationSchema = Yup.object().shape({
-    email: Yup.string()
-        .email('Invalid email format')
-        .required('Required'),
+let validationSchema = Yup.object().shape({
+    email: Yup.string().email("Invalid email format").required("Required"),
     password: Yup.string()
-        .min(8, 'Password must be at least 8 characters long')
-        .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
-        .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
-        .matches(/\d/, 'Password must contain at least one number')
-        .matches(/[$@!%*?&]/, 'Password must contain at least one special character')
-        .required('Required'),
+        .min(8, "Password must be at least 8 characters long")
+        .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+        .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+        .matches(/\d/, "Password must contain at least one number")
+        .matches(/[$@!%*?&]/, "Password must contain at least one special character")
+        .required("Required"),
 });
 
 export default function Login() {
-    const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(false);
+    let navigate = useNavigate();
     const [error, setIsError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const { setUserId } = useContext(UserContext);
 
     async function loginSubmit(values) {
-        console.log("Submitting:", values);
         setIsLoading(true);
         setIsError(null);
 
         try {
-            const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/user/login`, values);
-            console.log("Response data:", data);
-
-            if (data.message === 'User logged in successfully') {
-                console.log("User ID:", data.userId);
-                console.log("Token:", data.token);
-                localStorage.setItem('userID', data.userId);
-                localStorage.setItem('userToken', data.token);
-                navigate('/home');
+            let { data } = await axios.post(`${import.meta.env.VITE_API_URL}/user/login`, values);
+            navigate("/home");
+            if (data.message === "user logged in") {
+                localStorage.setItem('userId', data.userId);
+                navigate("/home");
             } else {
                 setIsError(data.message || "Login failed");
             }
         } catch (err) {
-            setIsLoading(false);
-            if (err.response) {
-                setIsError(err.response.data.message);
-            } else {
-                setIsError("An unexpected error occurred");
-            }
+            setIsError(err.response ? err.response.data.message : "An error occurred");
         } finally {
             setIsLoading(false);
         }
     }
 
+
+
     const formik = useFormik({
-        initialValues: { email: '', password: '' },
+        initialValues: { email: "", password: "" },
         validationSchema,
         onSubmit: loginSubmit,
     });
 
     return (
-
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-dark-bg">
@@ -76,7 +66,7 @@ export default function Login() {
                         </label>
                         <div className="mt-2">
                             <input
-                                {...formik.getFieldProps('email')}
+                                {...formik.getFieldProps("email")}
                                 id="email"
                                 type="email"
                                 required
@@ -97,7 +87,7 @@ export default function Login() {
                         </div>
                         <div className="mt-2">
                             <input
-                                {...formik.getFieldProps('password')}
+                                {...formik.getFieldProps("password")}
                                 id="password"
                                 type="password"
                                 required
@@ -110,24 +100,18 @@ export default function Login() {
                         </div>
                     </div>
 
-                    {isLoading ? <button className='btn bg-main text-white mt-2' type='button'>
-                        <RotatingLines
-                            color="white"
-                            width="30"
-                            visible={true}
-                            ariaLabel="rotating-lines-loading" />
+                    <button
+                        type="submit"
+                        disabled={isLoading}
+                        className={`flex w-full justify-center rounded-md px-3 py-1.5 tracking-wider text-md font-bold leading-7 shadow-md 
+            ${isLoading ? "bg-dark-bg hover:bg-text-dark" : "bg-dark-bg hover:bg-text-dark"} 
+            text-hover-color hover:text-text-light ease-in duration-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
+                    >
+                        {isLoading ? "Loading..." : "Login"}
                     </button>
-                        : <button
-                            disabled={!formik.isValid && formik.dirty|| formik.isSubmitting}
-                            type="submit"
-                            className="flex w-full justify-center rounded-md px-3 py-1.5 tracking-wider text-md font-bold leading-7 shadow-md bg-dark-bg hover:bg-text-dark text-hover-color hover:text-text-light ease-in duration-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                            Login
-                        </button>}
                 </form>
                 {error && <div className="text-[#b91c1c] text-sm mt-2">{error}</div>}
             </div>
         </div>
     );
 }
-
