@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
+
 const validationSchema = Yup.object().shape({
     username: Yup.string()
         .required('Required'),
@@ -22,13 +23,13 @@ const validationSchema = Yup.object().shape({
 export default function Register() {
     const navigate = useNavigate();
     const [error, setIsError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     async function registerSubmit(values) {
-        console.log(values);
+        setIsLoading(true);
 
         try {
-            let { data } = await axios.post(`${import.meta.env.VITE_API_URL}/user/register`, values);
-            console.log(data);
+            let { data } = await axios.post(`${import.meta.env.VITE_API_URL}/user/register`, values); s
             if (data.message === 'User registered successfully') {
                 navigate('/login');
             }
@@ -36,8 +37,11 @@ export default function Register() {
             if (error.response) {
                 setIsError(error.response.data.message);
             } else {
-                setIsError("An unexpected error occurred");
+                // setIsError("An unexpected error occurred");
+                navigate('/login');
             }
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -132,9 +136,12 @@ export default function Register() {
                         <div>
                             <button
                                 type="submit"
-                                className="flex w-full justify-center rounded-md px-3 py-1.5 tracking-wider text-md font-bold leading-7 shadow-md bg-dark-bg hover:bg-text-dark text-hover-color hover:text-text-light ease-in duration-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                disabled={isLoading}
+                                className={`flex w-full justify-center rounded-md px-3 py-1.5 tracking-wider text-md font-bold leading-7 shadow-md 
+                            ${isLoading ? 'bg-dark-bg hover:bg-text-dark' : 'bg-dark-bg hover:bg-text-dark'} 
+                            text-hover-color hover:text-text-light ease-in duration-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
                             >
-                                Register
+                                {isLoading ? "Loading..." : "Register"}
                             </button>
                         </div>
                     </form>

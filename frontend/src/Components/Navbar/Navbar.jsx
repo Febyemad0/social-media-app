@@ -22,8 +22,6 @@ export default function Navbar() {
       </div>
       <div className="flex-1">
         <Link to={"/home"} className="btn btn-ghost text-xl text-text-light">daisyUI</Link>
-        <Link className="px-3 text-text-light" to="/register">Register</Link>
-        <Link className="px-3 text-text-light" to="/login">Login</Link>
       </div>
       <div className="flex-none gap-2">
         <div className="form-control">

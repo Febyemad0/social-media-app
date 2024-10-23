@@ -10,7 +10,7 @@ export default function LeftSidebar() {
                 <img
                     src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                     alt="User Profile"
-                    className="rounded-full w-9/12"
+                    className="rounded-full w-7/12"
                 />
             </div>
             <h2 className="text-center mt-7 mb-7 text-lg font-semibold">Sandreen</h2>
@@ -35,7 +35,7 @@ export default function LeftSidebar() {
                         </Link>
                     </li>
                     <li className="flex items-center">
-                        <Link to="/logout" className="flex items-center px-4 py-2 text-light-bg hover:text-hover-color ease-in duration-100">
+                        <Link to="/" className="flex items-center px-4 py-2 text-light-bg hover:text-hover-color ease-in duration-100">
                             <CgLogOut className="mr-2" />
                             Logout
                         </Link>
