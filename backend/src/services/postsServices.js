@@ -1,4 +1,5 @@
 import Post from "../models/posts.js";
+import UserModel from "./userServices.js";
 
 /**
  * Class representing operations related to the Post model.
@@ -60,7 +61,7 @@ class PostModel {
     }
   }
   // remove like
-  static async removeFriend(userId, postId) {
+  static async removeLike(userId, postId) {
     let post = await Post.findById(postId);
     if (!post) {
       throw new Error("post does not exist");
@@ -77,6 +78,17 @@ class PostModel {
       throw new Error("post does not exist");
     }
     return post.likes.length;
+  }
+
+  static async getTimeline(userId) {
+    let friends = await UserModel.getFriendsById(userId);
+    let posts = await Promise.all(
+      friends.map(async (firend) => {
+        return await PostModel.getPostsByUserId(firend._id);
+      })
+    );
+    posts = posts.flat();
+    return posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
 }
 

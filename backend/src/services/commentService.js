@@ -54,7 +54,7 @@ class CommentModel {
   }
 
   // remove like
-  static async removeFriend(userId, postId) {
+  static async removeLike(userId, postId) {
     let comment = await Comment.findById(commentId);
     if (!comment) {
       throw new Error("Comment does not exist");
