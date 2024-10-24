@@ -25,8 +25,7 @@ const corsOptions = {
 
 // Use CORS middleware with options
 app.use(cors(corsOptions));
-app.use(express.static(path.join(__dirname, "images")));
-console.log(path.join(__dirname, "media"));
+app.use(express.static("images"));
 app.use(express.static("media"));
 app.use(express.json());
 app.use(cookieParser());

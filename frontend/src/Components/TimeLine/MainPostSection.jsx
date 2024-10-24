@@ -32,21 +32,21 @@ const postsReducer = (state, action) => {
   }
 };
 
-export default function MainPostSection({ activeUser }) {
+export default function MainPostSection() {
   const [state, dispatch] = useReducer(postsReducer, initialState);
   const { posts, loading, error } = state;
   const [postContent, setPostContent] = React.useState("");
   const [feeling, setFeeling] = React.useState("");
   const [file, setFile] = React.useState(null);
   const [updated, setUpdated] = React.useState(true);
-  const [isLive, setIsLive] = React.useState(false);
+  const [user, setUser] = React.useState(null);
+
   const videoRef = useRef(null);
 
   const handleUpload = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
-      console.log(selectedFile);
     }
   };
 
@@ -72,57 +72,54 @@ export default function MainPostSection({ activeUser }) {
 
   const handleSubmitPost = async (e) => {
     e.preventDefault();
-    if (!postContent) return;
+    if (!postContent || !user) return;
 
-    dispatch({ type: "SET_LOADING", payload: true });
-
-    // Create a FormData object to hold the post data and file
     const formData = new FormData();
-    formData.append("content", postContent); // Append post content
-    formData.append("feeling", feeling); // Append feeling
+    formData.append("content", postContent);
+    formData.append("feeling", feeling);
 
-    // Append file if it exists
     if (file) {
-      formData.append("media", file); // Append the file to the form data
+      formData.append("media", file);
     }
 
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/post/`,
-        formData, // Use the FormData object as the request body
+        formData,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data", // Important for file uploads
+            "Content-Type": "multipart/form-data",
           },
         }
       );
 
-      // Update state or perform actions based on the response
       setUpdated(!updated);
       setPostContent("");
       setFeeling("");
       setFile(null);
-      setIsLive(false);
     } catch (error) {
       dispatch({ type: "SET_ERROR", payload: error.message });
-    } finally {
-      dispatch({ type: "SET_LOADING", payload: false });
-    }
-  };
-
-  const submitImage = async (image) => {
-    const formData = new FormData();
-    formData.append("image", image);
-    try {
-      const response = await axios.post("/upload", formData);
-      return response.data.imageUrl;
-    } catch (error) {
-      throw new Error("Failed to upload image");
     }
   };
 
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/auth/profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        setUser(response.data.user);
+      } catch (error) {
+        console.error("Error fetching user", error);
+      }
+    };
+
     const fetchPosts = async () => {
       dispatch({ type: "SET_LOADING", payload: true });
       try {
@@ -141,28 +138,28 @@ export default function MainPostSection({ activeUser }) {
         dispatch({ type: "SET_LOADING", payload: false });
       }
     };
+
+    fetchUser();
     fetchPosts();
   }, [updated]);
 
   return (
     <div className="main-section p-6">
       {/* Display User Info */}
-      <div className="active-user flex items-center mb-4">
-        <img
-          src={activeUser.profilePicture}
-          alt={`${activeUser.username}'s avatar`}
-          className="rounded-full w-12 h-12 border-2 border-blue-500 mr-4"
-        />
-        <div>
-          <h2 className="font-semibold text-lg">{activeUser.username}</h2>
-          <p className="text-gray-500">Online</p>
+      {user && (
+        <div className="active-user flex items-center mb-4">
+          <img
+            src={user.profileImage}
+            alt={`${user.username}'s avatar`}
+            className="rounded-full w-12 h-12 border-2 border-blue-500 mr-4"
+          />
         </div>
-      </div>
+      )}
 
       {/* Post Form */}
       <form
         onSubmit={handleSubmitPost}
-        className="flex mb-4 bg-white p-4 rounded-lg shadow"
+        className="flex mb-4 bg-light-bg p-4 rounded-lg shadow "
       >
         <textarea
           value={postContent}
