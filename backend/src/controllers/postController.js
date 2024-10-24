@@ -4,7 +4,7 @@ export const createPost = async (req, res) => {
   const { content } = req.body;
   const title = "title";
   const userId = req.userId;
-  const media = [];
+  let media = [];
   if (req.files) {
     media = req.files.map((file) => file.filename);
   }

@@ -31,6 +31,7 @@ export default function MainPostSection({ activeUser }) {
   const [postContent, setPostContent] = React.useState("");
   const [feeling, setFeeling] = React.useState("");
   const [file, setFile] = React.useState(null);
+  const [updated, setUpdated] = React.useState(true);
   const [isLive, setIsLive] = React.useState(false);
   const videoRef = useRef(null);
 
@@ -38,6 +39,7 @@ export default function MainPostSection({ activeUser }) {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
+      console.log(selectedFile);
     }
   };
 
@@ -47,26 +49,30 @@ export default function MainPostSection({ activeUser }) {
 
     dispatch({ type: "SET_LOADING", payload: true });
 
-    let imageUrl = "";
-    if (file) {
-      imageUrl = await submitImage(file);
-    }
+    // Create a FormData object to hold the post data and file
+    const formData = new FormData();
+    formData.append("content", postContent); // Append post content
+    formData.append("feeling", feeling); // Append feeling
 
-    const newPost = {
-      content: postContent,
-      feeling,
-      media: imageUrl ? [imageUrl] : [],
-    };
+    // Append file if it exists
+    if (file) {
+      formData.append("media", file); // Append the file to the form data
+    }
 
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/post/`,
-        newPost,
+        formData, // Use the FormData object as the request body
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data", // Important for file uploads
+          },
         }
       );
-      dispatch({ type: "ADD_POST", payload: response.data.data });
+
+      // Update state or perform actions based on the response
+      setUpdated(!updated);
       setPostContent("");
       setFeeling("");
       setFile(null);
@@ -109,7 +115,7 @@ export default function MainPostSection({ activeUser }) {
       }
     };
     fetchPosts();
-  }, []);
+  }, [updated]);
 
   return (
     <div className="main-section p-6">
@@ -142,6 +148,7 @@ export default function MainPostSection({ activeUser }) {
           type="file"
           onChange={handleUpload}
           className="border p-2 mr-2 rounded-lg"
+          accept="image/*"
         />
         <button
           type="submit"
@@ -183,7 +190,7 @@ function PostCard({ post }) {
       {post.feeling && <p>Feeling: {post.feeling}</p>}
       {post.media.length > 0 && (
         <img
-          src={post.media[0]}
+          src={`${import.meta.env.VITE_API_URL}/${post.media[0]}`}
           alt="Post media"
           className="w-full mt-2 rounded-lg"
         />
