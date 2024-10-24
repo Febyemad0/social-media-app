@@ -1,8 +1,13 @@
 import postModel from "../services/postsServices.js";
 
 export const createPost = async (req, res) => {
-  const { title, content, userId } = req.body;
-  const media = req.files.map((file) => file.filename);
+  const { content } = req.body;
+  const title = "title";
+  const userId = req.userId;
+  const media = [];
+  if (req.files) {
+    media = req.files.map((file) => file.filename);
+  }
   const post = await postModel.create(title, content, userId, media);
   res.status(200).json({ message: "post created successfully", data: post });
 };
