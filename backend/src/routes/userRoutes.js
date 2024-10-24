@@ -10,11 +10,11 @@ import {
   updateUserProfile,
   getFriendsById,
   addFriend,
-  removeFriend
+  removeFriend,
+  logout,
 } from "../controllers/userController.js";
 import registerValidation from "../middlewares/validator.js";
 import verifyToken from "../middlewares/authMiddleware.js";
-
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -25,7 +25,6 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
-
 
 const route = express.Router();
 /**
@@ -70,6 +69,7 @@ route.post("/register", registerValidation, register);
  *     - 500 status with { error: `Login ${error}` }
  */
 route.post("/login", login);
+route.post("/logout", logout);
 /**
  * Controller: updateUserProfie
  * Takes:
@@ -102,13 +102,10 @@ route.put("/:Id", verifyToken, updateUser);
  */
 route.delete("/:Id", verifyToken, deleteUser);
 
+route.get("/friend/:Id", verifyToken, getFriendsById);
 
+route.post("/friend", verifyToken, addFriend);
 
-route.get("/friend/:Id",verifyToken, getFriendsById);
-
-route.post("/friend",verifyToken, addFriend);
-
-route.delete( "/friend" ,verifyToken, removeFriend )
-
+route.delete("/friend", verifyToken, removeFriend);
 
 export default route;
