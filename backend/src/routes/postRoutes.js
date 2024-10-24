@@ -8,6 +8,7 @@ import {
   deletePost,
   addLike,
   getLikes,
+  getTimeLine,
 } from "../controllers/postController.js";
 import verifyToken from "../middlewares/authMiddleware.js";
 
@@ -58,8 +59,7 @@ route.post("/", verifyToken, upload.array("media"), createPost);
  *   - Success: 200 status with { data: post }
  *   - Failure: 404 status with { message: "post Not found" }
  */
-route.post("/", verifyToken, upload.array("media"), createPost);
-
+route.put("/:Id", verifyToken, upload.array("media"), updatePost);
 /**
  * Controller: deletePost
  * Takes:
@@ -86,5 +86,7 @@ route.get("/like", verifyToken, getLikes);
  *   - Success: 200 status with { message: "Like Added successfully" }
  */
 route.post("/like", verifyToken, addLike);
+
+route.get("/timeLine", verifyToken, getTimeLine);
 
 export default route;
