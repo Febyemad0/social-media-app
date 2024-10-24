@@ -58,7 +58,8 @@ route.post("/", verifyToken, upload.array("media"), createPost);
  *   - Success: 200 status with { data: post }
  *   - Failure: 404 status with { message: "post Not found" }
  */
-route.put("/:Id", verifyToken,upload.array("media"), updatePost);
+route.post("/", verifyToken, upload.array("media"), createPost);
+
 /**
  * Controller: deletePost
  * Takes:
