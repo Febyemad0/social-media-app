@@ -50,29 +50,43 @@ export default function MainPostSection() {
     }
   };
 
-  const handleLikePost = async (postId) => {
-    console.log(postId);
+  const handleDeletePost = async (postId) => {
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/post/like`,
-        { postId }, // Use the FormData object as the request body
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/post/${postId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "multipart/form-data", // Important for file uploads
           },
         }
       );
+      setUpdated(!updated);
     } catch (error) {
-      dispatch({ type: "SET_ERROR", payload: error.message });
-    } finally {
-      dispatch({ type: "SET_LOADING", payload: false });
+      console.error(error.response?.data?.message || error.message);
+      nse;
     }
   };
-
+  const handleLikePost = async (postId) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/post/like`,
+        { postId },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setUpdated(!updated);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const handleSubmitPost = async (e) => {
+    console.log(e);
     e.preventDefault();
-    if (!postContent || !user) return;
+    // if (!postContent || !user) return;
 
     const formData = new FormData();
     formData.append("content", postContent);
@@ -104,21 +118,21 @@ export default function MainPostSection() {
   };
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/auth/profile`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setUser(response.data.user);
-      } catch (error) {
-        console.error("Error fetching user", error);
-      }
-    };
+    // const fetchUser = async () => {
+    //   try {
+    //     const response = await axios.get(
+    //       `${import.meta.env.VITE_API_URL}/user/profile`,
+    //       {
+    //         headers: {
+    //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //         },
+    //       }
+    //     );
+    //     setUser(response.data.user);
+    //   } catch (error) {
+    //     console.error("Error fetching user", error);
+    //   }
+    // };
 
     const fetchPosts = async () => {
       dispatch({ type: "SET_LOADING", payload: true });
@@ -139,7 +153,7 @@ export default function MainPostSection() {
       }
     };
 
-    fetchUser();
+    // fetchUser();
     fetchPosts();
   }, [updated]);
 
@@ -197,7 +211,7 @@ export default function MainPostSection() {
         ) : (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-1 lg:grid-cols-2">
             {posts.map((post) => (
-              <div key={post.id} className="bg-white rounded-lg shadow-md p-4">
+              <div key={post._id} className="bg-white rounded-lg shadow-md p-4">
                 <div className="flex items-start">
                   <img
                     src={post.profilePicture}
@@ -240,7 +254,7 @@ export default function MainPostSection() {
                       </button>
                       <button
                         className="text-red-500"
-                        onClick={() => handleDeletePost(post.id)}
+                        onClick={() => handleDeletePost(post._id)}
                       >
                         <FontAwesomeIcon icon={faTrash} />
                       </button>
