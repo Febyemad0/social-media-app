@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
+import MainPostSection from '../TimeLine/MainPostSection';
+import PostManagement from '../TimeLine/PostManagement';
 
-export default function Home() {
+export default function Home({ activeUser }) {
+
+    const [posts, setPosts] = useState([]);
+
     return (
-        <div>
-            <h1>Welcome to the Home Page</h1>
-            <p>This is a sample content section to ensure that the Home component renders more than just the word 'component'.</p>
+        <div className="home-container">
+            <PostManagement posts={posts} setPosts={setPosts} />
+            <MainPostSection activeUser={activeUser} posts={posts} />
         </div>
     );
 }
