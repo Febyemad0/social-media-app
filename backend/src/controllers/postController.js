@@ -71,7 +71,9 @@ export const deletePost = async (req, res) => {
 
 export const addLike = async (req, res) => {
   try {
-    const { postId, userId } = req.body;
+    const { postId } = req.body;
+    console.log(req.body);
+    let userId = req.userId;
     const like = await postModel.addLike(postId, userId);
     res.status(200).json({ message: "Like Added successfully" });
   } catch (error) {

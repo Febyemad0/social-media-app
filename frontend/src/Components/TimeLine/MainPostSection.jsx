@@ -1,6 +1,13 @@
 import React, { useReducer, useRef, useEffect } from "react";
 import axios from "axios";
-
+import {
+  faHeart,
+  faTrash,
+  faShareAlt,
+  faSmile,
+  faVideo,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const initialState = {
   posts: [],
   loading: false,
@@ -40,6 +47,26 @@ export default function MainPostSection({ activeUser }) {
     if (selectedFile) {
       setFile(selectedFile);
       console.log(selectedFile);
+    }
+  };
+
+  const handleLikePost = async (postId) => {
+    console.log(postId);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/post/like`,
+        { postId }, // Use the FormData object as the request body
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data", // Important for file uploads
+          },
+        }
+      );
+    } catch (error) {
+      dispatch({ type: "SET_ERROR", payload: error.message });
+    } finally {
+      dispatch({ type: "SET_LOADING", payload: false });
     }
   };
 
@@ -165,12 +192,75 @@ export default function MainPostSection({ activeUser }) {
       {loading && <p>Loading posts...</p>}
 
       {/* Posts Section */}
-      <div className="posts mt-4">
+      {/* Timeline Feed */}
+      <div className="flex-1 p-4 overflow-y-auto h-screen">
+        <h1 className="text-2xl mb-4">Timeline Feed</h1>
+        {posts.length === 0 ? (
+          <p className="text-center text-gray-500">No posts available.</p>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-1 lg:grid-cols-2">
+            {posts.map((post) => (
+              <div key={post.id} className="bg-white rounded-lg shadow-md p-4">
+                <div className="flex items-start">
+                  <img
+                    src={post.profilePicture}
+                    alt={post.username}
+                    className="rounded-full w-10 h-10 mr-4"
+                  />
+                  <div className="flex-1">
+                    <h2 className="font-semibold">{post.username}</h2>
+                    <p className="text-gray-700">{post.content}</p>
+                    {post.media.length > 0 && (
+                      <img
+                        src={`${import.meta.env.VITE_API_URL}/${post.media[0]}`}
+                        alt="Post media"
+                        className="w-full mt-2 rounded-lg"
+                      />
+                    )}
+                    <div className="flex items-center space-x-2 mt-2">
+                      {post.feeling && (
+                        <p className="text-sm text-gray-500 flex items-center">
+                          <FontAwesomeIcon icon={faSmile} className="mr-1" />
+                          Feeling {post.feeling}
+                        </p>
+                      )}
+                      {post.isLive && (
+                        <p className="text-sm text-red-500 flex items-center">
+                          <FontAwesomeIcon icon={faVideo} className="mr-1" />
+                          Live now!
+                        </p>
+                      )}
+                      <button
+                        className="text-sm text-blue-500 flex items-center"
+                        onClick={() => handleLikePost(post._id)}
+                      >
+                        <FontAwesomeIcon icon={faHeart} className="mr-1" />
+                        {post.likes.length}
+                      </button>
+                      <button className="text-sm text-blue-500 flex items-center">
+                        <FontAwesomeIcon icon={faShareAlt} className="mr-1" />
+                        Share
+                      </button>
+                      <button
+                        className="text-red-500"
+                        onClick={() => handleDeletePost(post.id)}
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {/* <div className="posts mt-4">
         {posts.length === 0 && !loading && <p>No posts available.</p>}
         {posts.map((post) => (
           <PostCard key={post._id} post={post} />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
