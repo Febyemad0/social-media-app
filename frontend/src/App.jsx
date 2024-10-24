@@ -8,9 +8,19 @@ import Register from './Components/Auth/Register/Register';
 import IntroPage from './Components/IntroPage/IntroPage';
 import { UserContext } from '../src/Context/UserContext';
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute';
+import MainPostSection from './Components/TimeLine/MainPostSection';
+import PostManagement from './Components/TimeLine/PostManagement';
+
+
+
 
 export default function App() {
+
   const { userId } = useContext(UserContext);
+  const activeUser = {
+    username: "JohnDoe",
+    profilePicture: "https://via.placeholder.com/150"
+  };
 
   return (
     <>
@@ -27,9 +37,13 @@ export default function App() {
               <ProtectedRoute>
                 <Navbar />
                 <div className="flex">
-                  <Sidebar />
+                  <Sidebar>
+                  </Sidebar>
                   <div className="flex flex-col flex-1 ml-64">
-                    <Home/>
+                    <Home activeUser={activeUser} >
+                      <MainPostSection />
+                      <PostManagement />
+                    </Home>
                   </div>
                 </div>
               </ProtectedRoute>

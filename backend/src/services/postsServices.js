@@ -19,7 +19,10 @@ class PostModel {
 
   // Retrieves all posts created by a specific user
   static async getPostsByUserId(userId) {
-    return Post.find({ userId: userId }).lean();
+    console.log(userId);
+    return Post.find({ userId: userId }) // Filter by userId
+      .populate("userId", "username profileImage") // Populate with only the desired fields
+      .lean();
   }
 
   // Retrieves a post document by its ID
@@ -82,6 +85,7 @@ class PostModel {
 
   static async getTimeline(userId) {
     let friends = await UserModel.getFriendsById(userId);
+    friends.push({ _id: userId });
     let posts = await Promise.all(
       friends.map(async (firend) => {
         return await PostModel.getPostsByUserId(firend._id);

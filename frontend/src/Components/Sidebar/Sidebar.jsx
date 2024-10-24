@@ -5,7 +5,7 @@ import { FaUserFriends } from "react-icons/fa";
 
 export default function LeftSidebar() {
     return (
-        <div className="flex flex-col h-screen w-64 bg-dark-bg text-light-bg fixed">
+        <div className="flex flex-col fixed h-screen w-64 bg-dark-bg text-light-bg">
             <div className="flex items-center justify-center mt-4">
                 <img
                     src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"

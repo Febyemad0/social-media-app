@@ -1,8 +1,13 @@
 import postModel from "../services/postsServices.js";
 
 export const createPost = async (req, res) => {
-  const { title, content, userId } = req.body;
-  const media = req.files.map((file) => file.filename);
+  const { content } = req.body;
+  const title = "title";
+  const userId = req.userId;
+  let media = [];
+  if (req.files) {
+    media = req.files.map((file) => file.filename);
+  }
   const post = await postModel.create(title, content, userId, media);
   res.status(200).json({ message: "post created successfully", data: post });
 };
@@ -66,7 +71,9 @@ export const deletePost = async (req, res) => {
 
 export const addLike = async (req, res) => {
   try {
-    const { postId, userId } = req.body;
+    const { postId } = req.body;
+    console.log(req.body);
+    let userId = req.userId;
     const like = await postModel.addLike(postId, userId);
     res.status(200).json({ message: "Like Added successfully" });
   } catch (error) {

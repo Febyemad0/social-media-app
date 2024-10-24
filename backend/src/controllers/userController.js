@@ -22,7 +22,9 @@ export const register = async (req, res) => {
         partitioned: true,
       };
       res.cookie("token", token, cookieOptions);
-      res.status(201).json({ message: "User registered successfully" , data:user});
+      res
+        .status(201)
+        .json({ message: "User registered successfully", data: user });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -56,7 +58,14 @@ export const login = async (req, res) => {
     res.cookie("token", token, cookieOptions);
     res
       .status(200)
-      .json({ message: "user logged in", userId: email_is_exist.id });
+      .json({
+        message: "user logged in",
+        user: {
+          username: email_is_exist.username,
+          profileImage: email_is_exist.profileImage,
+          id: email_is_exist._id,
+        },
+      });
   } catch (error) {
     res.status(500).json({ error: `Login ${error}` });
   }
@@ -65,7 +74,10 @@ export const login = async (req, res) => {
 export const updateUserProfile = async (req, res) => {
   try {
     const userId = req.userId;
-    const updatedUser = await userModel.updateProfileImg(userId, req.file.filename);
+    const updatedUser = await userModel.updateProfileImg(
+      userId,
+      req.file.filename
+    );
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -80,91 +92,86 @@ export const updateUserProfile = async (req, res) => {
 
 export const getUserByEmail = async (req, res) => {
   try {
-  const email = req.body.email;
-  const user = await userModel.getByEmail(email);
-  if (!user) {
-    return res.status(404).json({ message: "User Not Found" });
+    const email = req.body.email;
+    const user = await userModel.getByEmail(email);
+    if (!user) {
+      return res.status(404).json({ message: "User Not Found" });
+    }
+    res.status(200).json({ data: user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-  res.status(200).json({ data: user });
- } catch (err) {
-  res.status(500).json({ error: err.message });
- }
 };
 
 export const getUserById = async (req, res) => {
   try {
-  const Id = req.params.Id;
-  const user = await userModel.getById(Id);
-  if (!user) {
-    return res.status(404).json({ message: "User Not Found" });
+    const Id = req.params.Id;
+    const user = await userModel.getById(Id);
+    if (!user) {
+      return res.status(404).json({ message: "User Not Found" });
+    }
+    res.status(200).json({ data: user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-  res.status(200).json({ data: user });
- } catch (err) {
-  res.status(500).json({ error: err.message });
- }
 };
 
 export const updateUser = async (req, res) => {
   try {
-  const Id = req.params.Id;
-  const updatedData = req.body;
-  const user = await userModel.update(Id, updatedData);
-  if (!user) {
-    return res.status(404).json({ message: "user doesn't exist" });
+    const Id = req.params.Id;
+    const updatedData = req.body;
+    const user = await userModel.update(Id, updatedData);
+    if (!user) {
+      return res.status(404).json({ message: "user doesn't exist" });
+    }
+    res.status(200).json({ data: user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-  res.status(200).json({ data: user });
- } catch (err) {
-  res.status(500).json({ error: err.message });
- }
 };
 
 export const deleteUser = async (req, res) => {
   try {
-  const Id = req.params.Id;
-  const user = await userModel.delete(Id);
-  if (!user) {
-    return res.status(404).json({ message: "user doesn't exist" });
+    const Id = req.params.Id;
+    const user = await userModel.delete(Id);
+    if (!user) {
+      return res.status(404).json({ message: "user doesn't exist" });
+    }
+    res.status(200).json({ message: "user deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-  res.status(200).json({ message: "user deleted successfully" });
- } catch (err) {
-  res.status(500).json({ error: err.message });
-}
 };
-
 
 export const getFriendsById = async (req, res) => {
   try {
-  const Id = req.params.Id;
-  const friends = await userModel.getFriendsById(Id);
-  if (!friends) {
-    return res.json({ message: "There is no friends yet" });
+    const Id = req.params.Id;
+    const friends = await userModel.getFriendsById(Id);
+    if (!friends) {
+      return res.json({ message: "There is no friends yet" });
+    }
+    res.status(200).json({ data: friends });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-  res.status(200).json({ data: friends });
-} catch (err) {
-  res.status(500).json({ error: err.message });
-}
 };
-
 
 export const addFriend = async (req, res) => {
   try {
-  const { friendId, userId } = req.body;
-  const friend = await userModel.addFriend(userId , friendId);
-  res.status(200).json({ message: "friend Added successfully" });
- } catch (error) {
-  res.status(500).json({ error:`${error.message}` });
- }
+    const { friendId, userId } = req.body;
+    const friend = await userModel.addFriend(userId, friendId);
+    res.status(200).json({ message: "friend Added successfully" });
+  } catch (error) {
+    res.status(500).json({ error: `${error.message}` });
+  }
 };
-
 
 export const removeFriend = async (req, res) => {
   try {
     const { friendId, userId } = req.body;
-    const friend = await userModel.removeFriend(userId , friendId);
+    const friend = await userModel.removeFriend(userId, friendId);
     res.status(200).json({ message: "user removed successfully" });
- } catch (err) {
-   res.status(500).json({ error: err.message });
-}
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
-
-
