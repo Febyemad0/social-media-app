@@ -12,7 +12,10 @@ const postsReducer = (state, action) => {
     case "ADD_POST":
       return { ...state, posts: [action.payload, ...state.posts] };
     case "SET_POSTS":
-      return { ...state, posts: Array.isArray(action.payload) ? action.payload : [] };
+      return {
+        ...state,
+        posts: Array.isArray(action.payload) ? action.payload : [],
+      };
     case "SET_LOADING":
       return { ...state, loading: action.payload };
     case "SET_ERROR":
@@ -57,9 +60,11 @@ export default function MainPostSection({ activeUser }) {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/post/timeLine`,
+        `${import.meta.env.VITE_API_URL}/post/`,
         newPost,
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
       );
       dispatch({ type: "ADD_POST", payload: response.data.data });
       setPostContent("");
@@ -90,7 +95,11 @@ export default function MainPostSection({ activeUser }) {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/post/timeLine`,
-          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
         );
         dispatch({ type: "SET_POSTS", payload: response.data.data });
       } catch (error) {
@@ -118,7 +127,10 @@ export default function MainPostSection({ activeUser }) {
       </div>
 
       {/* Post Form */}
-      <form onSubmit={handleSubmitPost} className="flex mb-4 bg-white p-4 rounded-lg shadow">
+      <form
+        onSubmit={handleSubmitPost}
+        className="flex mb-4 bg-white p-4 rounded-lg shadow"
+      >
         <textarea
           value={postContent}
           onChange={(e) => setPostContent(e.target.value)}
