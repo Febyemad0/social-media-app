@@ -56,19 +56,21 @@ export const login = async (req, res) => {
       partitioned: true,
     };
     res.cookie("token", token, cookieOptions);
-    res
-      .status(200)
-      .json({
-        message: "user logged in",
-        user: {
-          username: email_is_exist.username,
-          profileImage: email_is_exist.profileImage,
-          id: email_is_exist._id,
-        },
-      });
+    res.status(200).json({
+      message: "user logged in",
+      user: {
+        username: email_is_exist.username,
+        profileImage: email_is_exist.profileImage,
+        id: email_is_exist._id,
+      },
+    });
   } catch (error) {
     res.status(500).json({ error: `Login ${error}` });
   }
+};
+export const logout = async (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "logged out" });
 };
 
 export const updateUserProfile = async (req, res) => {
