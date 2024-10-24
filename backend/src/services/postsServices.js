@@ -82,6 +82,7 @@ class PostModel {
 
   static async getTimeline(userId) {
     let friends = await UserModel.getFriendsById(userId);
+    friends.push({ _id: userId });
     let posts = await Promise.all(
       friends.map(async (firend) => {
         return await PostModel.getPostsByUserId(firend._id);
